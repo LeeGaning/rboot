@@ -1,11 +1,11 @@
 package wechat
 
 import (
-	"github.com/ghaoo/rboot"
-	sdk "github.com/ghaoo/wechat"
 	"strconv"
 	"strings"
-	"time"
+
+	"github.com/ghaoo/rboot"
+
 )
 
 type wx struct {
@@ -13,28 +13,25 @@ type wx struct {
 	out chan *rboot.Message
 
 	bot    *rboot.Robot
-	client *sdk.WeChat
 }
-
+//	Appid
+	Secret
+	Templateid string `yaml:"Templateid"`
+	Url        string `yaml:"Url"`
 func New(bot *rboot.Robot) rboot.Adapter {
-
 	// 初始化微信
-	client, err := sdk.NewBot(nil)
-	if err != nil {
-		panic(err)
-	}
+	corpid := os.Getenv("WX_APPID")
+	secret := os.Getenv("WX_SECRET")
+	agentid := os.Getenv("WX_TEMPLATEID")
+	agentid := os.Getenv("WX_TEMPLATEID")
 
 	w := &wx{
 		in:     make(chan *rboot.Message),
 		out:    make(chan *rboot.Message),
 		bot:    bot,
-		client: client,
 	}
 
-	client.Hook(w.Assisant)
-
 	go w.run()
-	go w.syncContact()
 
 	return w
 }
@@ -52,7 +49,6 @@ func (w *wx) Outgoing() chan *rboot.Message {
 }
 
 func (w *wx) run() {
-
 	go func() {
 		for msg := range w.out {
 			if len(msg.Header.GetKey("file")) > 0 {
@@ -72,8 +68,6 @@ func (w *wx) run() {
 		switch e.Type {
 		case sdk.EVENT_STOP_LOOP:
 			return
-		case sdk.EVENT_CONTACT_CHANGE:
-			w.syncContact()
 		case sdk.EVENT_NEW_MESSAGE:
 			msg := e.Data.(sdk.MsgData)
 
@@ -109,20 +103,6 @@ func (w *wx) run() {
 		}
 
 	}
-}
-
-func (w *wx) syncContact() {
-	// 等待10秒钟
-	time.Sleep(10 * time.Second)
-	contacts := w.client.AllContacts()
-
-	// 保存用户信息
-	for _, c := range contacts {
-		w.bot.Brain.Set("user", c.UserName, []byte(c.NickName))
-	}
-
-	// 保存机器人信息
-	w.bot.Brain.Set("user", w.client.MySelf.UserName, []byte(w.client.MySelf.NickName))
 }
 
 func init() {

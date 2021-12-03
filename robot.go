@@ -304,7 +304,7 @@ func (bot *Robot) initialize() {
 	bot.Brain = brain()
 
 	// 监听 http 入站消息的 ResultFul API
-	bot.Router.HandleFunc("/incoming", bot.listenIncoming).Methods("POST")
+	bot.Router.HandleFunc("/incoming", bot.listenIncoming).Methods("GET")
 }
 
 func init() {

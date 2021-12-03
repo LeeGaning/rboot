@@ -9,6 +9,7 @@ require (
 	github.com/ghaoo/wxwork v0.0.0-20200110024225-559ff16d722b
 	github.com/go-yaml/yaml v2.1.0+incompatible
 	github.com/gorilla/mux v1.7.4
+	github.com/hundredlee/wechat_pusher v0.0.0-20170713154332-458e30caeff3
 	github.com/lestrrat-go/file-rotatelogs v2.4.0+incompatible
 	github.com/lestrrat-go/strftime v1.0.3 // indirect
 	github.com/pkg/errors v0.9.1 // indirect

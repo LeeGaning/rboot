@@ -154,6 +154,7 @@ func (wx *wework) listenOutgoing() {
 		msg.SetUser(out.To)
 
 		_, err := wx.client.SendMessage(msg)
+		logrus.Debugf("%s", msg)
 		if err != nil {
 			logrus.WithFields(logrus.Fields{
 				"mod": `wework`,

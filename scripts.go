@@ -106,6 +106,7 @@ func allScripts(dir string) ([]script, error) {
 		var scp = script{}
 		err = yaml.Unmarshal(data, &scp)
 		if err != nil {
+			logrus.Error(err)
 			continue
 		}
 
@@ -132,6 +133,7 @@ func loadScript(file string) ([]byte, error) {
 }
 
 func runCommand(dir, command string, args ...string) (string, error) {
+	logrus.Debug(dir, command, args)
 
 	cmd := exec.Command(command, args...)
 	if dir != "" {
@@ -140,6 +142,7 @@ func runCommand(dir, command string, args ...string) (string, error) {
 
 	output, err := cmd.CombinedOutput()
 	if err != nil {
+		logrus.Errorf("run script error: %v - %q", err, string(output))
 		return "", fmt.Errorf("run script error: %v - %q", err, string(output))
 	}
 

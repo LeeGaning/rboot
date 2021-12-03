@@ -15,7 +15,8 @@ func main() {
 }
 
 func init() {
-	logrus.SetLevel(logrus.TraceLevel)
+	// logrus.SetLevel(logrus.TraceLevel)
+	logrus.SetLevel(logrus.DebugLevel)
 	logrus.SetFormatter(&logrus.TextFormatter{
 		ForceColors: true,
 	})
