@@ -3,13 +3,14 @@ package dingtalk
 import (
 	"bytes"
 	"encoding/json"
-	"github.com/ghaoo/rboot"
 	"log"
 	"net/http"
 	"net/url"
 	"os"
 	"strconv"
 	"time"
+
+	"github.com/ghaoo/rboot"
 )
 
 var baseHookUrl = "https://oapi.dingtalk.com/robot/send"
@@ -75,9 +76,9 @@ func (ding *dingtalk) buildMessage(msg *rboot.Message) *Message {
 
 	switch msg.Header.Get("msgtype") {
 	case "text":
-		dmsg = NewTextMessage(msg.String())
+		dmsg = NewTextMessage(msg.ToString())
 	case "link":
-		dmsg = NewLinkMessage(title, msg.String(), msg.Header.Get("msgUrl"), msg.Header.Get("picUrl"))
+		dmsg = NewLinkMessage(title, msg.ToString(), msg.Header.Get("msgUrl"), msg.Header.Get("picUrl"))
 	case "actionCard":
 		var card *ActionCard
 
@@ -98,7 +99,7 @@ func (ding *dingtalk) buildMessage(msg *rboot.Message) *Message {
 			dmsg = NewFeedCardMessage(links)
 		}
 	default:
-		dmsg = NewMarkdownMessage(title, msg.String())
+		dmsg = NewMarkdownMessage(title, msg.ToString())
 	}
 
 	atMobiles := msg.Header["atMobiles"]

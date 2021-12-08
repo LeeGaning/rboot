@@ -5,6 +5,7 @@ import (
 	"crypto/sha256"
 	"encoding/base64"
 	"fmt"
+	"io/ioutil"
 	"net/http"
 	"os"
 	"time"
@@ -50,23 +51,56 @@ func (bot *Robot) VerifySign(sign, content, datetime string) error {
 }
 
 // listenIncoming 用于传入消息，为保证消息的安全性，消息应该进行签名加密
+// func (bot *Robot) listenIncoming(w http.ResponseWriter, r *http.Request) {
+// 	q := r.URL.Query()
+// 	logrus.Debug(q)
+// 	sign := q.Get("token")
+// 	datetime := q.Get("datetime")
+
+// 	content := q.Get("msg")
+
+// 	if err := bot.VerifySign(sign, string(content), datetime); err != nil {
+// 		logrus.Error(err)
+// 		w.WriteHeader(403)
+// 		w.Write([]byte(err.Error()))
+// 		return
+// 	}
+
+// 	var msg = NewMessage(string(content), strings.Split(q.Get("to"), "|")...)
+
+// 	msg.From = q.Get("from")
+// 	msg.Sender = q.Get("sender")
+// 	msg.Header = Header(r.Header)
+// 	logrus.Debug(msg)
+// 	bot.inputChan <- msg
+
+// 	w.WriteHeader(200)
+// 	w.Write([]byte("发送成功"))
+// }
+
+// listenIncoming 用于传入消息，为保证消息的安全性，消息应该进行签名加密
 func (bot *Robot) listenIncoming(w http.ResponseWriter, r *http.Request) {
-	q := r.URL.Query()
-	sign := q.Get("token")
-	datetime := q.Get("datetime")
+	sign := r.Header.Get("sign")
+	datetime := r.Header.Get("datetime")
+	logrus.Debug(r.Header)
+	content, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		w.WriteHeader(400)
+		w.Write([]byte("the message read failed, errmsg: " + err.Error()))
+		return
+	}
+	defer r.Body.Close()
 
-	content := q.Get("msg")
-
-	if err := bot.VerifySign(sign, string(content), datetime); err != nil {
+	if err = bot.VerifySign(sign, string(content), datetime); err != nil {
 		w.WriteHeader(403)
 		w.Write([]byte(err.Error()))
 		return
 	}
 
-	var msg = NewMessage(string(content), q.Get("to"))
+	var msg = NewMessage(string(content), r.Header.Get("to"))
 
-	msg.From = q.Get("from")
-	msg.Sender = q.Get("sender")
+	msg.From = r.Header.Get("from")
+	msg.Sender = r.Header.Get("sender")
 	msg.Header = Header(r.Header)
 
 	bot.inputChan <- msg

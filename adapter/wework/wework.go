@@ -47,9 +47,9 @@ func newAgent() *wxwork.Agent {
 	a := wxwork.NewAgent(corpid, agentid)
 	a = a.WithSecret(secret)
 
-	token := os.Getenv("WORKWX_RECV_TOKEN")
-	encodingAESKey := os.Getenv("WORKWX_RECV_AES_KEY")
-	a.SetCallback(token, encodingAESKey)
+	// token := os.Getenv("WORKWX_RECV_TOKEN")
+	// encodingAESKey := os.Getenv("WORKWX_RECV_AES_KEY")
+	// a.SetCallback(token, encodingAESKey)
 
 	return a
 }
@@ -118,10 +118,10 @@ func (wx *wework) listenOutgoing() {
 		title := out.Header.Get("title")
 		desc := out.Header.Get("description")
 		url := out.Header.Get("url")
-
+		logrus.Debug(out.Header)
 		switch out.Header.Get("msgtype") {
 		case MSG_TYPE_TEXT:
-			msg = wxwork.NewTextMessage(out.String())
+			msg = wxwork.NewTextMessage(out.ToString())
 
 		case MSG_TYPE_IMAGE, MSG_TYPE_VOICE, MSG_TYPE_FILE:
 			if out.Header.Get("file") != "" {
@@ -148,7 +148,7 @@ func (wx *wework) listenOutgoing() {
 			msg = wxwork.NewTextCardMessage(title, desc, url, btntxt)
 
 		default:
-			msg = wxwork.NewMarkdownMessage(out.String())
+			msg = wxwork.NewMarkdownMessage(out.ToString())
 		}
 
 		msg.SetUser(out.To)

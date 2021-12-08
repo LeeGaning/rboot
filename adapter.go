@@ -104,7 +104,7 @@ func (c *cli) run() {
 			for {
 				select {
 				case msg := <-c.out:
-					c.writeString(msg.String())
+					c.writeString(msg.ToString())
 				default:
 					break forLoop
 				}
@@ -114,7 +114,7 @@ func (c *cli) run() {
 
 	go func() {
 		for msg := range c.out {
-			c.writeString(msg.String())
+			c.writeString(msg.ToString())
 		}
 	}()
 }

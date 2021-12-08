@@ -34,7 +34,7 @@ func NewMessage(content string, to ...string) *Message {
 		Header: Header{},
 		Body:   strings.NewReader(content),
 	}
-
+	logrus.Debug(to)
 	if len(to) > 0 {
 		msg.To = to[0]
 		msg.SetCc(to[1:]...)
@@ -44,7 +44,7 @@ func NewMessage(content string, to ...string) *Message {
 }
 
 // String 读取消息内容为 string
-func (m *Message) String() string {
+func (m *Message) ToString() string {
 	content, err := ioutil.ReadAll(m.Body)
 	if err != nil {
 		logrus.WithFields(logrus.Fields{

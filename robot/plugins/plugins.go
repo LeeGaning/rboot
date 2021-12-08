@@ -1,7 +1,7 @@
 package plugins
 
 import (
-	_ "github.com/ghaoo/rboot/robot/plugins/hello"
-	_ "github.com/ghaoo/rboot/robot/plugins/ping"
-	_ "github.com/ghaoo/rboot/robot/plugins/vote"
+	_ "robot/plugins/hello"
+	_ "robot/plugins/ping"
+	_ "robot/plugins/vote"
 )

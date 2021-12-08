@@ -1,9 +1,10 @@
 package main
 
 import (
+	_ "robot/plugins"
+
 	"github.com/ghaoo/rboot"
 	_ "github.com/ghaoo/rboot/adapter"
-	_ "github.com/ghaoo/rboot/robot/plugins"
 	"github.com/sirupsen/logrus"
 )
 

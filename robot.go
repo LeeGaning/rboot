@@ -107,13 +107,10 @@ func process(bot *Robot) {
 				bot.fireHooks(HOOK_BEFORE_INCOMING, msg)
 
 				// 匹配消息
-				if plug, rule, args, ok := bot.matchPlugin(strings.TrimSpace(msg.String())); ok {
+				if plug, rule, args, ok := bot.matchPlugin(strings.TrimSpace(msg.ToString())); ok {
 
 					if bot.Debug {
-						logrus.Debugf("- 插件: %s\n- 规则: %s\n- 参数: %v\n\n",
-							plug,
-							rule,
-							args[1:])
+						logrus.Debugf("- 插件: %s\n- 规则: %s\n- 参数: %v\n\n", plug, rule, args[1:])
 					}
 
 					// 获取插件执行函数
@@ -168,6 +165,8 @@ func process(bot *Robot) {
 						// 处理消息后的Hook
 						bot.fireHooks(HOOK_AFTER_OUTGOING, msg)
 					}
+				} else {
+					bot.outputChan <- msg
 				}
 
 			}(bot, in)

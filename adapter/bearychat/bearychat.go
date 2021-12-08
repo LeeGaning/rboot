@@ -3,11 +3,12 @@ package bearychat
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/ghaoo/rboot"
-	"github.com/sirupsen/logrus"
 	"net/http"
 	"os"
 	"strings"
+
+	"github.com/ghaoo/rboot"
+	"github.com/sirupsen/logrus"
 )
 
 // bearychat adapter
@@ -43,7 +44,7 @@ func (b *beary) Outgoing() chan *rboot.Message {
 func (b *beary) listenOutgoing() {
 	for msg := range b.out {
 		res := Response{
-			Text:         msg.String(),
+			Text:         msg.ToString(),
 			Channel:      msg.To,
 			User:         msg.Sender,
 			Notification: msg.Header.Get("Notification"),
