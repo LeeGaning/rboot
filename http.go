@@ -102,7 +102,7 @@ func (bot *Robot) listenIncoming(w http.ResponseWriter, r *http.Request) {
 	msg.From = r.Header.Get("from")
 	msg.Sender = r.Header.Get("sender")
 	msg.Header = Header(r.Header)
-
+	msg.KeepHeader = true
 	bot.inputChan <- msg
 
 	w.WriteHeader(200)
