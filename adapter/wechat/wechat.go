@@ -39,16 +39,18 @@ func (w *wx) Outgoing() chan *rboot.Message {
 }
 
 func (w *wx) run() {
-	// go w.vx.GetAccessToken() // 刷新token
+	// w.vx.GetAccessToken() // 刷新token
 	for out := range w.out {
 		msg := &PushMsg{
-			NameId: out.To,         //当前消息的用户名
-			Msg:    out.ToString(), //消息内容
+			NameId:   out.To,         //当前消息的用户名
+			Msg:      out.ToString(), //消息内容
+			MsgTitle: out.Header.Get("title"),
+			UserName: out.Header.Get("toName"),
+			Url:      out.Header.Get("url"),
 		}
-		w.vx.MsgID(msg)
+		w.vx.MsgPush(msg)
 		logrus.Debugf("wechat send:%v", out)
 	}
-
 }
 
 func init() {
